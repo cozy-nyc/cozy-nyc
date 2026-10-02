@@ -16,7 +16,7 @@ This is the old college-era style, used as the starting point for the cozy NYC m
 | `tokens/index.ts` | `palette` (name → hex) for code that can't use CSS variables, like map layers |
 | `css/cozy.css` | The same tokens as CSS custom properties, plus type classes |
 | `assets/logo/cube-*.svg` | The cube logo in white, pink, hot, blue and deep (60×60) |
-| `map/style.ts` | `cozyMapStyle(mask)`: the "diorama" MapLibre style (white city, flat water, few labels); colors in `tokens.color.map` |
+| `map/style.ts` | `cozyMapStyle({ mask, subwayLines, subwayStations })`: the flat "subway map" MapLibre style; map colors in `tokens.color.map`, MTA line colors in `MTA_COLORS` |
 
 ## Using it
 

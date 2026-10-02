@@ -15,7 +15,7 @@ Open cozy at 10pm and you see New York in 2.5D, lit up where things are happenin
 
 | Decision | Choice | Why | Revisit when |
 |---|---|---|---|
-| Rendering | MapLibre GL JS (WebGL) with extruded OSM buildings and a pitched camera | Gives real NYC geography and 2.5D for free, runs on phones, shareable by link | We need custom shaders or characters MapLibre can't draw. Next step is three.js or deck.gl layered on the same map, not a full rewrite |
+| Rendering | MapLibre GL JS (WebGL), flat top-down, our own style | Real NYC geography from OSM tiles, runs on phones, shareable by link. 2.5D was tried and parked: a flat subway-diagram look reads better for now | We want blocks/avatars MapLibre can't draw: add a three.js or deck.gl layer on the same map, not a rewrite |
 | Godot | Not for the MVP | Godot's web export is heavy, has no real map/tiles story, and puts the app behind a big download. Fits better as a later "cozy world" mode or a native app | We want a game-like walkable world beyond map scale |
 | Backend | Node + Fastify + WebSocket, TypeScript | Shared types with the client, easy to hire for. The old Rust code was a hello world, so nothing is lost | Presence needs to fan out to many thousands of users at once (Rust/Go presence service) |
 | Database | Postgres (PGlite embedded in dev) | Real SQL from day one, zero setup locally; PostGIS is ready in docker-compose | — |
@@ -52,10 +52,10 @@ Goal: show it to 20 friends on a Friday night.
 
 ### Phase 3 — aesthetics
 - [x] Panel UI uses the old cozy palette and fonts from comfy/Figma.
-- [x] "Diorama" map style (`packages/comfy/map/style.ts`): white toy city on flat grey-blue water, after the Work&Co subway map and white 3D-printed city models. Only the five boroughs are drawn; everything else is water.
-- [ ] Rounded, marshmallow-like building blocks (needs a custom three.js layer; MapLibre extrusions are sharp-edged).
+- [x] Flat "subway map" style (`packages/comfy/map/style.ts`): white boroughs on grey-blue water, faint streets, subway lines in MTA colors with stations, after the MTA/Vignelli diagram and Work&Co's redraw. Only the five boroughs are drawn; everything else is water. No buildings for now.
+- [ ] Bring back 2.5D blocks as an option, rounded and marshmallow-like (custom three.js layer; the earlier flat-extrusion version is in git history at the "Diorama map style" commit).
 - [ ] Night variant of the map style.
-- [ ] Subway lines in MTA colors (OpenMapTiles has no line colors; needs the MTA GTFS shapes).
+- [ ] Schematic (non-geographic) subway geometry, like the real diagram, if the geographic lines feel too wiggly.
 - [ ] Fill in the empty Figma pages (inputs, buttons, navigation, effects) for the map UI.
 - [ ] three.js custom layer for avatars, crowds around hot venues, particles and light beams.
 - [ ] Day/night lighting tied to the real clock.

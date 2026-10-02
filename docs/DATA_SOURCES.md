@@ -25,3 +25,12 @@ As of Oct 2026. Re-check terms before turning anything on.
 - Source popularity (RA's "interested" count if we get a feed).
 - Recency-weighted comment velocity (already partly in).
 - Opt-in aggregate foot traffic, much later.
+
+## Map data (not events)
+
+| Data | Source | In repo |
+|---|---|---|
+| Streets, water, parks, labels | OpenStreetMap via [OpenFreeMap](https://openfreemap.org) vector tiles (free, no key) | fetched live |
+| Borough boundaries (shoreline-clipped) | [NYC Open Data gthc-hcne](https://data.cityofnewyork.us/d/gthc-hcne) | `packages/shared/src/geo/nyc-boroughs.json`, simplified with mapshaper |
+| Subway lines | [MTA Subway Service Lines, data.ny.gov s692-irgq](https://data.ny.gov/d/s692-irgq) | `packages/shared/src/geo/subway-lines.json`, simplified to 4% |
+| Subway stations | [MTA Subway Stations, data.ny.gov 39hk-dx4f](https://data.ny.gov/d/39hk-dx4f) | `packages/shared/src/geo/subway-stations.json` |

@@ -1,13 +1,15 @@
 import { useEffect, useRef } from "react";
 import maplibregl, { type GeoJSONSource, type Map as MlMap } from "maplibre-gl";
 import { NYC_BOUNDS, type Avatar, type CozyEvent } from "@cozy/shared";
-import { NYC_MASK, isInNyc } from "@cozy/shared/geo";
+import { NYC_MASK, SUBWAY_LINES, SUBWAY_STATIONS, isInNyc } from "@cozy/shared/geo";
 import { palette } from "@cozy/comfy/tokens";
 import { cozyMapStyle } from "@cozy/comfy/map";
 import type { Identity } from "../identity";
 
-// Our own "marshmallow" style over free OpenStreetMap vector tiles. VITE_MAP_STYLE can point at any style URL instead.
-const STYLE = import.meta.env.VITE_MAP_STYLE ?? (cozyMapStyle(NYC_MASK) as unknown as maplibregl.StyleSpecification);
+// Our own flat "subway map" style over free OpenStreetMap vector tiles. VITE_MAP_STYLE can point at any style URL instead.
+const STYLE =
+  import.meta.env.VITE_MAP_STYLE ??
+  (cozyMapStyle({ mask: NYC_MASK, subwayLines: SUBWAY_LINES, subwayStations: SUBWAY_STATIONS }) as unknown as maplibregl.StyleSpecification);
 const WALK_METERS_PER_SEC = 150; // fast on purpose: crossing Manhattan shouldn't take an hour
 const SEND_EVERY_MS = 100;
 
@@ -59,10 +61,12 @@ export function CityMap(props: Props) {
       container: container.current!,
       style: STYLE,
       center: [props.position.current.lng, props.position.current.lat],
-      zoom: 15,
-      pitch: 60, // the "2.5D" look
-      bearing: -29, // align with the Manhattan grid
-      maxPitch: 75,
+      zoom: 14.5,
+      bearing: -29, // align with the Manhattan grid, like the subway diagram
+      maxPitch: 0, // flat for now; 2.5D blocks can come back later
+      dragRotate: false,
+      pitchWithRotate: false,
+      touchPitch: false,
       minZoom: 10,
       maxBounds: [
         [NYC_BOUNDS.west - 0.05, NYC_BOUNDS.south - 0.05],
@@ -101,7 +105,6 @@ export function CityMap(props: Props) {
           "circle-color": heatColor as never,
           "circle-stroke-color": palette.white,
           "circle-stroke-width": ["case", ["get", "selected"], 3, 1],
-          "circle-pitch-alignment": "map",
         },
       });
       map.addLayer({
@@ -246,7 +249,7 @@ export function CityMap(props: Props) {
   // Fly to the selected event.
   useEffect(() => {
     const e = props.events.find((x) => x.id === props.selectedId);
-    if (e) mapRef.current?.easeTo({ center: [e.lng, e.lat], zoom: Math.max(mapRef.current.getZoom(), 15.5) });
+    if (e) mapRef.current?.easeTo({ center: [e.lng, e.lat], zoom: Math.max(mapRef.current.getZoom(), 15) });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.selectedId]);
 

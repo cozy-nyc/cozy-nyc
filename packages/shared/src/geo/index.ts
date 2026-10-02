@@ -1,11 +1,19 @@
 import boroughs from "./nyc-boroughs.json";
 import mask from "./nyc-mask.json";
+import subwayLines from "./subway-lines.json";
+import subwayStations from "./subway-stations.json";
 
 /**
  * The five boroughs, clipped to the shoreline. Source: NYC Open Data
  * "Borough Boundaries" (gthc-hcne), simplified to ~175 KB with mapshaper.
  */
 export const NYC_BOROUGHS = boroughs as unknown as GeoJSON.FeatureCollection<GeoJSON.MultiPolygon, { boroname: string; borocode: string }>;
+
+/** MTA "Subway Service Lines" (data.ny.gov s692-irgq), simplified. Property `service` is the line letter/number. */
+export const SUBWAY_LINES = subwayLines as unknown as GeoJSON.FeatureCollection<GeoJSON.MultiLineString, { service: string }>;
+
+/** MTA "Subway Stations" (data.ny.gov 39hk-dx4f). */
+export const SUBWAY_STATIONS = subwayStations as unknown as GeoJSON.FeatureCollection<GeoJSON.Point, { stop_name: string; daytime_routes: string; gtfs_stop_id: string }>;
 
 /** A big rectangle around the city with the five boroughs cut out. Paint it to hide everything that isn't NYC. */
 export const NYC_MASK = mask as unknown as GeoJSON.FeatureCollection<GeoJSON.Polygon | GeoJSON.MultiPolygon>;

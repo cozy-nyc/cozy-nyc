@@ -1,4 +1,4 @@
-import { NYC_CENTER } from "@cozy/shared";
+import { isInNyc } from "@cozy/shared/geo";
 
 /** Guest identity kept in localStorage. Real accounts come later (docs/PLAN.md). */
 export interface Identity {
@@ -42,7 +42,11 @@ export function loadIdentity(): Identity {
   return id;
 }
 
-/** Spawn somewhere around Lower Manhattan with a little jitter. */
+/** Spawn somewhere around the East Village with a little jitter, on land. */
 export function spawnPoint() {
-  return { lng: NYC_CENTER.lng + (Math.random() - 0.5) * 0.01, lat: 40.7243 + (Math.random() - 0.5) * 0.01 };
+  for (let i = 0; i < 20; i++) {
+    const p = { lng: -73.9857 + (Math.random() - 0.5) * 0.01, lat: 40.7243 + (Math.random() - 0.5) * 0.01 };
+    if (isInNyc(p.lng, p.lat)) return p;
+  }
+  return { lng: -73.9857, lat: 40.7243 };
 }

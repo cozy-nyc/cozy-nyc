@@ -8,12 +8,16 @@
     "./css/*": "./css/*",
     "./tokens": "./tokens/index.ts",
     "./tokens/*": "./tokens/*",
-    "./assets/*": "./assets/*"
+    "./assets/*": "./assets/*",
+    "./map": "./map/style.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "echo 'no tests'",
     "build": "tsc --noEmit"
   },
-  "devDependencies": { "typescript": "^5.7.0" }
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "@types/geojson": "^7946.0.16"
+  }
 }

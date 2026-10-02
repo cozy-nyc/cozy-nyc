@@ -1,11 +1,13 @@
 import { useEffect, useRef } from "react";
 import maplibregl, { type GeoJSONSource, type Map as MlMap } from "maplibre-gl";
 import { NYC_BOUNDS, type Avatar, type CozyEvent } from "@cozy/shared";
+import { NYC_MASK, isInNyc } from "@cozy/shared/geo";
 import { palette } from "@cozy/comfy/tokens";
+import { cozyMapStyle } from "@cozy/comfy/map";
 import type { Identity } from "../identity";
 
-// Free, keyless vector tiles (OpenStreetMap data). Swap for a custom night style later.
-const STYLE_URL = import.meta.env.VITE_MAP_STYLE ?? "https://tiles.openfreemap.org/styles/liberty";
+// Our own "marshmallow" style over free OpenStreetMap vector tiles. VITE_MAP_STYLE can point at any style URL instead.
+const STYLE = import.meta.env.VITE_MAP_STYLE ?? (cozyMapStyle(NYC_MASK) as unknown as maplibregl.StyleSpecification);
 const WALK_METERS_PER_SEC = 150; // fast on purpose: crossing Manhattan shouldn't take an hour
 const SEND_EVERY_MS = 100;
 
@@ -44,31 +46,6 @@ function avatarsFc(avatars: { lng: number; lat: number; handle: string; color: s
   };
 }
 
-/** Adds an extrusion layer if the base style doesn't already have 3D buildings. */
-function ensureBuildings(map: MlMap) {
-  const layers = map.getStyle().layers ?? [];
-  if (layers.some((l) => l.type === "fill-extrusion")) return;
-  const vectorSource = Object.entries(map.getStyle().sources).find(([, s]) => s.type === "vector")?.[0];
-  if (!vectorSource) return;
-  const firstSymbol = layers.find((l) => l.type === "symbol")?.id;
-  map.addLayer(
-    {
-      id: "cozy-buildings-3d",
-      type: "fill-extrusion",
-      source: vectorSource,
-      "source-layer": "building",
-      minzoom: 13,
-      paint: {
-        "fill-extrusion-color": palette.white,
-        "fill-extrusion-height": ["coalesce", ["get", "render_height"], 10],
-        "fill-extrusion-base": ["coalesce", ["get", "render_min_height"], 0],
-        "fill-extrusion-opacity": 0.85,
-      },
-    },
-    firstSymbol,
-  );
-}
-
 export function CityMap(props: Props) {
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MlMap | null>(null);
@@ -80,40 +57,47 @@ export function CityMap(props: Props) {
   useEffect(() => {
     const map = new maplibregl.Map({
       container: container.current!,
-      style: STYLE_URL,
+      style: STYLE,
       center: [props.position.current.lng, props.position.current.lat],
       zoom: 15,
       pitch: 60, // the "2.5D" look
       bearing: -29, // align with the Manhattan grid
       maxPitch: 75,
+      minZoom: 10,
       maxBounds: [
-        [NYC_BOUNDS.west - 0.1, NYC_BOUNDS.south - 0.1],
-        [NYC_BOUNDS.east + 0.1, NYC_BOUNDS.north + 0.1],
+        [NYC_BOUNDS.west - 0.05, NYC_BOUNDS.south - 0.05],
+        [NYC_BOUNDS.east + 0.05, NYC_BOUNDS.north + 0.05],
       ],
     });
     mapRef.current = map;
+    if (import.meta.env.DEV) (window as unknown as { __map: MlMap }).__map = map; // for scripted screenshots
     map.keyboard.disable(); // WASD/arrows drive the avatar instead
 
     map.on("load", () => {
-      ensureBuildings(map);
       map.addSource("events", { type: "geojson", data: emptyFc() });
       map.addSource("avatars", { type: "geojson", data: emptyFc() });
       map.addSource("me", { type: "geojson", data: emptyFc() });
 
-      const heatRadius = ["interpolate", ["linear"], ["get", "heat"], 0, 6, 1, 22] as const;
+      // Dot size grows with heat, and with zoom so the city doesn't turn into blobs when zoomed out.
+      // MapLibre wants "zoom" at the top level, so the heat ramp is repeated per zoom stop.
+      const heatRadius = (scale: number) => [
+        "interpolate", ["linear"], ["zoom"],
+        10, ["interpolate", ["linear"], ["get", "heat"], 0, 2 * scale, 1, 8 * scale],
+        15, ["interpolate", ["linear"], ["get", "heat"], 0, 6 * scale, 1, 22 * scale],
+      ];
       const heatColor = ["interpolate", ["linear"], ["get", "heat"], 0, palette.blue, 0.5, palette.pink, 1, palette.hot] as const;
       map.addLayer({
         id: "events-glow",
         type: "circle",
         source: "events",
-        paint: { "circle-radius": ["*", 2.2, heatRadius] as never, "circle-color": heatColor as never, "circle-blur": 1, "circle-opacity": 0.45 },
+        paint: { "circle-radius": heatRadius(2.2) as never, "circle-color": heatColor as never, "circle-blur": 1, "circle-opacity": 0.45 },
       });
       map.addLayer({
         id: "events-dot",
         type: "circle",
         source: "events",
         paint: {
-          "circle-radius": heatRadius as never,
+          "circle-radius": heatRadius(1) as never,
           "circle-color": heatColor as never,
           "circle-stroke-color": palette.white,
           "circle-stroke-width": ["case", ["get", "selected"], 3, 1],
@@ -181,6 +165,7 @@ export function CityMap(props: Props) {
       const dt = Math.min(0.1, (t - last) / 1000);
       last = t;
       const pos = propsRef.current.position.current;
+      const before = { lng: pos.lng, lat: pos.lat };
       let dx = 0;
       let dy = 0;
       if (keys.has("w") || keys.has("arrowup")) dy += 1;
@@ -211,8 +196,15 @@ export function CityMap(props: Props) {
         moved = true;
       }
       if (moved) {
-        pos.lng = Math.min(NYC_BOUNDS.east, Math.max(NYC_BOUNDS.west, pos.lng));
-        pos.lat = Math.min(NYC_BOUNDS.north, Math.max(NYC_BOUNDS.south, pos.lat));
+        if (!isInNyc(pos.lng, pos.lat)) {
+          // You can't walk into the river. Stay where you were.
+          pos.lng = before.lng;
+          pos.lat = before.lat;
+          target = null;
+          moved = false;
+        }
+      }
+      if (moved) {
         if (dx || dy) map.setCenter([pos.lng, pos.lat]);
         syncMe();
         if (t - lastSent > SEND_EVERY_MS) {

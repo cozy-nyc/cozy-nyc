@@ -20,7 +20,8 @@ Open cozy at 10pm and you see New York in 2.5D, lit up where things are happenin
 | Backend | Node + Fastify + WebSocket, TypeScript | Shared types with the client, easy to hire for. The old Rust code was a hello world, so nothing is lost | Presence needs to fan out to many thousands of users at once (Rust/Go presence service) |
 | Database | Postgres (PGlite embedded in dev) | Real SQL from day one, zero setup locally; PostGIS is ready in docker-compose | — |
 | Identity | Guest handle + color in localStorage | Lowest-friction way to make the map feel alive | Phase 2 (accounts) |
-| Map tiles | OpenFreeMap (free, no key) | No cost, no key | Traffic grows or we want a custom night style (self-host with Protomaps PMTiles) |
+| Map tiles | OpenFreeMap vector tiles (free, no key) with our own style | No cost, no key, and the look is ours | Traffic grows (self-host with Protomaps PMTiles) |
+| Map extent | Five boroughs only; a mask paints everything else water-color | NYC is the product. Also hides New Jersey and Long Island so the city reads as one object | Never, probably |
 
 ## Phases
 
@@ -51,7 +52,10 @@ Goal: show it to 20 friends on a Friday night.
 
 ### Phase 3 — aesthetics
 - [x] Panel UI uses the old cozy palette and fonts from comfy/Figma.
-- [ ] Custom night map style in the cozy palette (cozy black base, pink/hot accents, glowing venue footprints).
+- [x] "Diorama" map style (`packages/comfy/map/style.ts`): white toy city on flat grey-blue water, after the Work&Co subway map and white 3D-printed city models. Only the five boroughs are drawn; everything else is water.
+- [ ] Rounded, marshmallow-like building blocks (needs a custom three.js layer; MapLibre extrusions are sharp-edged).
+- [ ] Night variant of the map style.
+- [ ] Subway lines in MTA colors (OpenMapTiles has no line colors; needs the MTA GTFS shapes).
 - [ ] Fill in the empty Figma pages (inputs, buttons, navigation, effects) for the map UI.
 - [ ] three.js custom layer for avatars, crowds around hot venues, particles and light beams.
 - [ ] Day/night lighting tied to the real clock.

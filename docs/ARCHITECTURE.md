@@ -30,7 +30,7 @@ Full snapshots to everyone work for a few hundred concurrent users. Next steps, 
 
 ## Web (`apps/web`)
 
-- `map/CityMap.tsx`: MapLibre map pitched to 60° and rotated to the Manhattan grid. Adds 3D building extrusions if the base style lacks them. GeoJSON sources hold events, other avatars, and you. A `requestAnimationFrame` loop handles walking: WASD moves relative to the camera, click-to-walk moves toward a target. Positions are sent at 10 Hz.
+- `map/CityMap.tsx`: MapLibre map pitched to 60° and rotated to the Manhattan grid, using the comfy "diorama" style. The five-borough mask (`@cozy/shared/geo`) hides everything outside NYC, and `isInNyc()` keeps avatars on land. GeoJSON sources hold events, other avatars, and you. A `requestAnimationFrame` loop handles walking: WASD moves relative to the camera, click-to-walk moves toward a target. Positions are sent at 10 Hz.
 - `useRealtime.ts`: WebSocket with automatic reconnect.
 - `audio/engine.ts`: layered loop engine (see AUDIO.md). Energy follows the hottest event within 400 m of you.
 - `ui/EventPanel.tsx`: event list sorted by heat, plus a detail view with live comments.

@@ -1,11 +1,8 @@
+/* Layout and components. Colors and fonts come from theme/cozy.css (comfy). */
 :root {
-  --bg: #120d1f;
-  --fg: #f3eefe;
-  --muted: #a99fc4;
-  --accent: #ff4fd8;
-  --panel: rgba(18, 13, 31, 0.88);
-  font-family: ui-sans-serif, system-ui, sans-serif;
-  color: var(--fg);
+  --panel: color-mix(in srgb, var(--bg) 92%, transparent);
+  font-family: var(--font-body);
+  color: var(--text);
 }
 * { box-sizing: border-box; }
 html, body, #root { margin: 0; height: 100%; background: var(--bg); }
@@ -13,30 +10,40 @@ html, body, #root { margin: 0; height: 100%; background: var(--bg); }
 .map { position: absolute; inset: 0; }
 .panel {
   position: absolute; top: 12px; left: 12px; bottom: 12px; width: min(360px, calc(100% - 24px));
-  display: flex; flex-direction: column; gap: 8px; padding: 12px;
-  background: var(--panel); border-radius: 12px; backdrop-filter: blur(6px); overflow: hidden;
+  display: flex; flex-direction: column; gap: 8px; padding: 14px;
+  background: var(--panel); border-radius: 14px; backdrop-filter: blur(6px); overflow: hidden;
+  box-shadow: 0 8px 30px rgb(0 0 0 / 0.25);
 }
 .panel header { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.panel h1 { margin: 0; font-size: 22px; letter-spacing: 0.04em; }
-.panel button { margin-left: auto; background: none; color: var(--fg); border: 1px solid var(--muted); border-radius: 999px; padding: 4px 10px; cursor: pointer; }
-.dot { width: 8px; height: 8px; border-radius: 50%; background: #666; }
-.dot.on { background: #3ef08a; box-shadow: 0 0 8px #3ef08a; }
-.muted { color: var(--muted); font-size: 12px; }
-.error { color: #ff7a7a; font-size: 12px; }
+.panel h1 { margin: 0; font: 800 26px var(--font-display); text-transform: lowercase; color: var(--accent); }
+.panel button {
+  margin-left: auto; background: var(--action); color: var(--cozy-white); border: 0; border-radius: 999px;
+  padding: 5px 12px; cursor: pointer; font: 600 13px var(--font-body);
+}
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-muted); }
+.dot.on { background: var(--alert); box-shadow: 0 0 8px var(--alert); }
+.muted { color: var(--text-muted); font-size: 12px; }
+.error { color: var(--foreground); font-size: 12px; }
 .list { list-style: none; margin: 0; padding: 0; overflow-y: auto; flex: 1; }
-.list li { position: relative; padding: 8px; border-radius: 8px; cursor: pointer; display: flex; flex-direction: column; gap: 2px; }
-.list li:hover { background: rgba(255, 255, 255, 0.06); }
-.list .heat { position: absolute; left: 0; bottom: 0; height: 2px; background: linear-gradient(90deg, #5b6cff, var(--accent), #ffb02e); }
-.list small { color: var(--muted); }
-.badge { margin-left: 6px; font-style: normal; font-size: 10px; padding: 0 4px; border: 1px solid var(--muted); border-radius: 4px; }
+.list li { position: relative; padding: 9px 8px; border-radius: 8px; cursor: pointer; display: flex; flex-direction: column; gap: 3px; }
+.list li:hover { background: color-mix(in srgb, var(--text) 8%, transparent); }
+.list strong { font: 800 14px var(--font-heading); }
+.list .heat { position: absolute; left: 0; bottom: 0; height: 2px; background: linear-gradient(90deg, var(--cozy-blue), var(--cozy-pink), var(--cozy-hot)); }
+.list small { color: var(--text-muted); }
+.badge { margin-left: 6px; font-style: normal; font-size: 10px; padding: 0 4px; border: 1px solid var(--text-muted); border-radius: 4px; }
 .detail { overflow-y: auto; flex: 1; position: relative; }
 .detail img { width: 100%; border-radius: 8px; }
-.detail h2 { margin: 8px 0 4px; font-size: 18px; padding-right: 24px; }
+.detail h2 { margin: 8px 0 4px; font: 800 20px var(--font-heading); padding-right: 28px; }
 .detail p { margin: 4px 0; }
-.detail a { color: var(--accent); }
-.detail .close { position: absolute; right: 0; top: 0; margin: 0; padding: 0 8px; font-size: 18px; }
-.detail input { width: 100%; margin: 10px 0; padding: 8px; border-radius: 8px; border: 1px solid var(--muted); background: transparent; color: var(--fg); }
+.detail a { color: var(--accent); font-weight: 700; }
+.detail .close { position: absolute; right: 0; top: 0; margin: 0; padding: 0 9px; font-size: 18px; background: transparent; color: var(--text); }
+.detail input {
+  width: 100%; margin: 10px 0; padding: 9px; border-radius: 8px; border: 1px solid var(--text-muted);
+  background: transparent; color: var(--text); font: 400 14px var(--font-body);
+}
+.detail input:focus { outline: 2px solid var(--accent); border-color: transparent; }
 .comments { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
+.comments b { color: var(--accent); }
 .panel footer { font-size: 11px; }
 @media (max-width: 600px) {
   .panel { top: auto; height: 45%; }

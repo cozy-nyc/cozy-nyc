@@ -50,7 +50,9 @@ Goal: show it to 20 friends on a Friday night.
 - [ ] Presence scaling: split the map into tiles so clients only receive nearby avatars; Redis pub/sub between server instances.
 
 ### Phase 3 — aesthetics
-- [ ] Custom night map style (dark base, neon accents, glowing venue footprints).
+- [x] Panel UI uses the old cozy palette and fonts from comfy/Figma.
+- [ ] Custom night map style in the cozy palette (cozy black base, pink/hot accents, glowing venue footprints).
+- [ ] Fill in the empty Figma pages (inputs, buttons, navigation, effects) for the map UI.
 - [ ] three.js custom layer for avatars, crowds around hot venues, particles and light beams.
 - [ ] Day/night lighting tied to the real clock.
 - [ ] Commissioned music stems replace the placeholders (see AUDIO.md). Genre-aware layers near venues.
@@ -66,7 +68,7 @@ Goal: show it to 20 friends on a Friday night.
 
 ## Open questions
 
-1. What does `comfy` (the second repo) become? Options: a home for the audio and art assets, the native/Godot client later, or archive it.
+1. ~~What does `comfy` become?~~ It's the design system: tokens, CSS and logo from the old Figma guide. Music stems could live there too.
 2. Comment moderation: who reviews reports at 2am?
 3. Is "tonight" always 5pm–6am, or should daytime events (gallery openings, markets) show up too?
 4. Brand: keep the name "cozy" on a nightlife product?

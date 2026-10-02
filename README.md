@@ -8,6 +8,7 @@ A live 2.5D map of New York City showing what's popping tonight. Events come fro
 - How it fits together: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 - Where events come from (and what's legally usable): [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md)
 - Music system and composer brief: [docs/AUDIO.md](docs/AUDIO.md)
+- Design system: [cozy-nyc/comfy](https://github.com/cozy-nyc/comfy) (tokens, logo) and the [Figma file](https://www.figma.com/design/8pN42b4cUOYKJnqcZ8D41o/cozy-design-system). The web app's `apps/web/src/theme/cozy.css` is copied from comfy.
 
 ## Quick start
 

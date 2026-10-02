@@ -98,6 +98,7 @@ export function App() {
       />
       <aside className="panel">
         <header>
+          <img className="logo" src="/cozy-cube.svg" alt="" width={28} height={28} />
           <h1>cozy</h1>
           <span className={rt.connected ? "dot on" : "dot"} title={rt.connected ? "live" : "offline"} />
           <span className="muted">

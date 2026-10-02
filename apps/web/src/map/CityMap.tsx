@@ -58,7 +58,7 @@ function ensureBuildings(map: MlMap) {
       "source-layer": "building",
       minzoom: 13,
       paint: {
-        "fill-extrusion-color": "#c9c3d6",
+        "fill-extrusion-color": "#fffdfa",
         "fill-extrusion-height": ["coalesce", ["get", "render_height"], 10],
         "fill-extrusion-base": ["coalesce", ["get", "render_min_height"], 0],
         "fill-extrusion-opacity": 0.85,
@@ -100,7 +100,7 @@ export function CityMap(props: Props) {
       map.addSource("me", { type: "geojson", data: emptyFc() });
 
       const heatRadius = ["interpolate", ["linear"], ["get", "heat"], 0, 6, 1, 22] as const;
-      const heatColor = ["interpolate", ["linear"], ["get", "heat"], 0, "#5b6cff", 0.5, "#ff4fd8", 1, "#ffb02e"] as const;
+      const heatColor = ["interpolate", ["linear"], ["get", "heat"], 0, "#58a2c1", 0.5, "#f792be", 1, "#d92d6b"] as const;
       map.addLayer({
         id: "events-glow",
         type: "circle",
@@ -114,7 +114,7 @@ export function CityMap(props: Props) {
         paint: {
           "circle-radius": heatRadius as never,
           "circle-color": heatColor as never,
-          "circle-stroke-color": "#fff",
+          "circle-stroke-color": "#fffdfa",
           "circle-stroke-width": ["case", ["get", "selected"], 3, 1],
           "circle-pitch-alignment": "map",
         },
@@ -125,9 +125,9 @@ export function CityMap(props: Props) {
         source: "events",
         minzoom: 13.5,
         layout: { "text-field": ["get", "venue"], "text-size": 12, "text-offset": [0, 1.6], "text-font": ["Noto Sans Regular"] },
-        paint: { "text-color": "#1b1430", "text-halo-color": "#fff", "text-halo-width": 1.5 },
+        paint: { "text-color": "#494949", "text-halo-color": "#fffdfa", "text-halo-width": 1.5 },
       });
-      for (const [src, stroke, width] of [["avatars", "#ffffff", 2], ["me", "#ffe14d", 4]] as const) {
+      for (const [src, stroke, width] of [["avatars", "#fffdfa", 2], ["me", "#ffb9a6", 4]] as const) {
         map.addLayer({
           id: `${src}-dot`,
           type: "circle",
@@ -139,7 +139,7 @@ export function CityMap(props: Props) {
           type: "symbol",
           source: src,
           layout: { "text-field": ["get", "handle"], "text-size": 11, "text-offset": [0, -1.6], "text-font": ["Noto Sans Regular"], "text-allow-overlap": true },
-          paint: { "text-color": "#fff", "text-halo-color": "#000", "text-halo-width": 1.5 },
+          paint: { "text-color": "#fffdfa", "text-halo-color": "#494949", "text-halo-width": 1.5 },
         });
       }
       loaded.current = true;

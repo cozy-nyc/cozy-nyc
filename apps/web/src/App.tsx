@@ -3,6 +3,7 @@ import type { CozyEvent, EventComment } from "@cozy/shared";
 import { api } from "./api";
 import { AudioEngine } from "./audio/engine";
 import { loadIdentity, spawnPoint } from "./identity";
+import { logo } from "./logo";
 import { CityMap } from "./map/CityMap";
 import { EventDetail, EventList } from "./ui/EventPanel";
 import { useRealtime } from "./useRealtime";
@@ -98,7 +99,7 @@ export function App() {
       />
       <aside className="panel">
         <header>
-          <img className="logo" src="/cozy-cube.svg" alt="" width={28} height={28} />
+          <img className="logo" src={logo} alt="" width={28} height={28} />
           <h1>cozy</h1>
           <span className={rt.connected ? "dot on" : "dot"} title={rt.connected ? "live" : "offline"} />
           <span className="muted">

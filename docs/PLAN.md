@@ -60,6 +60,14 @@ Goal: show it to 20 friends on a Friday night.
 ### Phase 4 — maybe
 - Godot or native "world" mode, partnerships with RA/promoters, ticketing affiliate revenue, other cities.
 
+## Repo strategy
+
+Everything lives in this one monorepo for now, including the design system (`packages/comfy`, imported from the old `cozy-nyc/comfy` repo with its history).
+
+Why not keep comfy separate yet: cozy is its only user. With two repos, every design change would need a release in comfy and then a version bump in the app. That's slow, and drifting copies are the usual result. Here one PR can change a token and the screens that use it.
+
+When to split it out: when a second, separate project (another city, a native app, a marketing site in another repo) needs it. Then publish `@cozy/comfy` to npm (or GitHub Packages) from this repo, or split it with `git subtree split --prefix=packages/comfy`. The package already has its own `package.json` and exports, so that's a small job.
+
 ## Splitting the work between two engineers
 
 - **Engineer A (data + backend):** sources, dedupe, venues, moderation, deploy, presence scaling.
@@ -68,7 +76,7 @@ Goal: show it to 20 friends on a Friday night.
 
 ## Open questions
 
-1. ~~What does `comfy` become?~~ It's the design system: tokens, CSS and logo from the old Figma guide. Music stems could live there too.
+1. ~~What does `comfy` become?~~ It's the design system, living in the monorepo at `packages/comfy` (see "Repo strategy" below).
 2. Comment moderation: who reviews reports at 2am?
 3. Is "tonight" always 5pm–6am, or should daytime events (gallery openings, markets) show up too?
 4. Brand: keep the name "cozy" on a nightlife product?

@@ -6,15 +6,26 @@ The cozy design system: colors, type and the cube logo, as code.
 - File: [cozy design system](https://www.figma.com/design/8pN42b4cUOYKJnqcZ8D41o/cozy-design-system) (page "Design Guide")
 - Team folder: [cozy on Figma](https://www.figma.com/files/team/1392311666896102790/folder/46243737)
 
-This is the old college-era style, used as the starting point for the cozy NYC map ([cozy-nyc/cozy-nyc](https://github.com/cozy-nyc/cozy-nyc)). Change it in Figma first, then update the files here.
+This is the old college-era style, used as the starting point for the cozy NYC map. It lives in the cozy monorepo as the `@cozy/comfy` workspace package (it used to be the separate `cozy-nyc/comfy` repo). Change it in Figma first, then update the files here.
 
 ## What's here
 
 | Path | What |
 |---|---|
 | `tokens/tokens.json` | Colors, color roles per mode, fonts, type scale ([W3C design tokens](https://tr.designtokens.org/format/) format) |
+| `tokens/index.ts` | `palette` (name → hex) for code that can't use CSS variables, like map layers |
 | `css/cozy.css` | The same tokens as CSS custom properties, plus type classes |
 | `assets/logo/cube-*.svg` | The cube logo in white, pink, hot, blue and deep (60×60) |
+
+## Using it
+
+```ts
+import "@cozy/comfy/css/cozy.css";              // CSS variables + type classes
+import { palette } from "@cozy/comfy/tokens";   // { pink: "#F792BE", ... }
+import logo from "@cozy/comfy/assets/logo/cube-pink.svg";
+```
+
+Fonts load from Google Fonts. The URL is at the top of `css/cozy.css`.
 
 ## The system in short
 

@@ -1,0 +1,19 @@
+{
+  "name": "@cozy/comfy",
+  "version": "0.1.0",
+  "private": true,
+  "description": "cozy design system: tokens, CSS theme and logos",
+  "type": "module",
+  "exports": {
+    "./css/*": "./css/*",
+    "./tokens": "./tokens/index.ts",
+    "./tokens/*": "./tokens/*",
+    "./assets/*": "./assets/*"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "echo 'no tests'",
+    "build": "tsc --noEmit"
+  },
+  "devDependencies": { "typescript": "^5.7.0" }
+}

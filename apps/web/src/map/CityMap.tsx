@@ -62,7 +62,7 @@ export function CityMap(props: Props) {
       style: STYLE,
       center: [props.position.current.lng, props.position.current.lat],
       zoom: 14.5,
-      bearing: -29, // align with the Manhattan grid, like the subway diagram
+      bearing: 0, // north-up, like the MTA map
       maxPitch: 0, // flat for now; 2.5D blocks can come back later
       dragRotate: false,
       pitchWithRotate: false,

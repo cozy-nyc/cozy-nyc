@@ -72,6 +72,13 @@ Why not keep comfy separate yet: cozy is its only user. With two repos, every de
 
 When to split it out: when a second, separate project (another city, a native app, a marketing site in another repo) needs it. Then publish `@cozy/comfy` to npm (or GitHub Packages) from this repo, or split it with `git subtree split --prefix=packages/comfy`. The package already has its own `package.json` and exports, so that's a small job.
 
+## Next session (map polish)
+
+- Scaling: what each zoom level is for, and what the min/max zoom should be.
+- Separating the boroughs visually (a hairline gap or outline between them, like the diagram's water channels).
+- When street lines appear: pick the zoom where the grid fades in, and how faint it is.
+- Decide whether to move to schematic (straightened) subway geometry.
+
 ## Splitting the work between two engineers
 
 - **Engineer A (data + backend):** sources, dedupe, venues, moderation, deploy, presence scaling.

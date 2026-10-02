@@ -1,0 +1,14 @@
+{
+  "name": "@cozy/shared",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "echo 'no tests'",
+    "build": "tsc --noEmit"
+  },
+  "dependencies": { "zod": "^3.24.0" },
+  "devDependencies": { "typescript": "^5.7.0" }
+}

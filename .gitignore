@@ -8,3 +8,9 @@ backend/target
 ###Node
 
 frontend/node_modules
+
+###Monorepo
+node_modules
+dist
+.env
+.pglite

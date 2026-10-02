@@ -1,0 +1,13 @@
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_USER: cozy
+      POSTGRES_PASSWORD: comfy123
+      POSTGRES_DB: cozy
+    ports:
+      - "5432:5432"
+    volumes:
+      - cozy-db:/var/lib/postgresql/data
+volumes:
+  cozy-db:

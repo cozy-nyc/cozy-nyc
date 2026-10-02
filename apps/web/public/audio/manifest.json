@@ -1,0 +1,22 @@
+{
+  "bpm": 118,
+  "beatsPerBar": 4,
+  "loopBars": 8,
+  "fadeBars": 4,
+  "scenes": [
+    { "id": "daylight", "fromHour": 6, "toHour": 17 },
+    { "id": "dusk", "fromHour": 17, "toHour": 21 },
+    { "id": "prime", "fromHour": 21, "toHour": 1 },
+    { "id": "peak", "fromHour": 1, "toHour": 4 },
+    { "id": "afterhours", "fromHour": 4, "toHour": 6 }
+  ],
+  "stems": [
+    { "id": "pad-day", "role": "bed", "scenes": ["daylight"], "url": null, "placeholder": { "type": "pad", "notes": [57, 60, 64, 67] } },
+    { "id": "pad-dusk", "role": "bed", "scenes": ["dusk"], "url": null, "placeholder": { "type": "pad", "notes": [55, 58, 62, 65] } },
+    { "id": "pad-night", "role": "bed", "scenes": ["prime", "peak"], "url": null, "placeholder": { "type": "pad", "notes": [50, 53, 57, 60] } },
+    { "id": "pad-late", "role": "bed", "scenes": ["afterhours"], "url": null, "placeholder": { "type": "pad", "notes": [52, 55, 59, 62] } },
+    { "id": "bass", "role": "bed", "scenes": ["dusk", "prime", "peak"], "url": null, "placeholder": { "type": "bass", "notes": [38, 38, 41, 36] } },
+    { "id": "kick", "role": "energy", "scenes": ["prime", "peak"], "url": null, "placeholder": { "type": "kick" } },
+    { "id": "hats", "role": "energy", "scenes": ["peak", "afterhours"], "url": null, "placeholder": { "type": "hat" } }
+  ]
+}

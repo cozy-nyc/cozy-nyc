@@ -66,6 +66,9 @@ Goal: show it to 20 friends on a Friday night.
 
 ## Repo strategy
 
+**Branches:** `rebirth` is the integration branch for everything until the public beta; `main` stays as the old project until then. Work on feature branches off `rebirth` and open PRs into `rebirth`. When the beta is ready, `rebirth` merges to `main`.
+
+
 Everything lives in this one monorepo for now, including the design system (`packages/comfy`, imported from the old `cozy-nyc/comfy` repo with its history).
 
 Why not keep comfy separate yet: cozy is its only user. With two repos, every design change would need a release in comfy and then a version bump in the app. That's slow, and drifting copies are the usual result. Here one PR can change a token and the screens that use it.

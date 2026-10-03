@@ -52,7 +52,7 @@ Goal: show it to 20 friends on a Friday night.
 
 ### Phase 3 — aesthetics
 - [x] Panel UI uses the old cozy palette and fonts from comfy/Figma.
-- [x] Flat "subway map" style (`packages/comfy/map/style.ts`): white boroughs on grey-blue water, faint streets, subway lines in MTA colors with stations, after the MTA/Vignelli diagram and Work&Co's redraw. Only the five boroughs are drawn; everything else is water. No buildings for now.
+- [x] Flat "subway map" style (`map/style.ts` in comfy): white boroughs on grey-blue water, faint streets, subway lines in MTA colors with stations, after the MTA/Vignelli diagram and Work&Co's redraw. Only the five boroughs are drawn; everything else is water. No buildings for now.
 - [ ] Bring back 2.5D blocks as an option, rounded and marshmallow-like (custom three.js layer; the earlier flat-extrusion version is in git history at the "Diorama map style" commit).
 - [ ] Night variant of the map style.
 - [ ] Schematic (non-geographic) subway geometry, like the real diagram, if the geographic lines feel too wiggly.

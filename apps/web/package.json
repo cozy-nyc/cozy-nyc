@@ -9,10 +9,10 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "test": "echo 'no tests yet'",
-    "deploy:dev": "pnpm build && wrangler pages deploy dist --project-name cozy-nyc-dev --branch rebirth"
+    "deploy:dev": "pnpm build && wrangler pages deploy dist --project-name cozy-nyc-dev --branch main"
   },
   "dependencies": {
-    "@cozy/comfy": "workspace:*",
+    "@cozy/comfy": "github:cozy-nyc/comfy",
     "@cozy/shared": "workspace:*",
     "maplibre-gl": "^5.0.0",
     "react": "^19.0.0",

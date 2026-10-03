@@ -5,10 +5,10 @@ Only the **web app** (`apps/web`, a static Vite build) goes on Cloudflare Pages.
 ## One-time setup
 
 1. Deploy the server and note its public URL, e.g. `https://cozy-api-dev.example.com`.
-2. Create the Pages project (direct upload): `pnpm --filter @cozy/web exec wrangler pages project create cozy-nyc-dev --production-branch rebirth`
+2. Create the Pages project (direct upload): `pnpm --filter @cozy/web exec wrangler pages project create cozy-nyc-dev --production-branch main`
 3. In GitHub, add repo secrets `CLOUDFLARE_API_TOKEN` (Pages: Edit permission) and `CLOUDFLARE_ACCOUNT_ID`, and repo variable `DEV_API_URL` (the server URL from step 1).
 
-After that, every push to `rebirth` runs `.github/workflows/deploy-dev.yml` (typecheck, test, build, deploy). You can also run it by hand from the Actions tab.
+After that, every push to `main` runs `.github/workflows/deploy-dev.yml` (typecheck, test, build, deploy). You can also run it by hand from the Actions tab.
 
 ## Manual deploy
 

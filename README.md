@@ -8,7 +8,7 @@ A live 2.5D map of New York City showing what's popping tonight. Events come fro
 - How it fits together: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 - Where events come from (and what's legally usable): [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md)
 - Music system and composer brief: [docs/AUDIO.md](docs/AUDIO.md)
-- Design system: [packages/comfy](packages/comfy) (tokens, CSS theme, logos), mirrored from the [Figma file](https://www.figma.com/design/8pN42b4cUOYKJnqcZ8D41o/cozy-design-system)
+- Design system: [cozy-nyc/comfy](https://github.com/cozy-nyc/comfy) (open source; tokens, CSS theme, map style, logos), mirrored from the [Figma file](https://www.figma.com/design/8pN42b4cUOYKJnqcZ8D41o/cozy-design-system). Installed from GitHub as `@cozy/comfy`; bump it with `pnpm --filter @cozy/web update @cozy/comfy`.
 
 ## Quick start
 
@@ -37,7 +37,6 @@ Controls: WASD / arrows to walk, shift to run, click the map to walk somewhere, 
 apps/server     Fastify API + WebSocket presence, event ingestion, Postgres
 apps/web        Vite + React + MapLibre GL (2.5D map), Web Audio engine
 packages/shared Types and the realtime protocol, shared by both apps
-packages/comfy  Design system: tokens, CSS theme, logos (@cozy/comfy)
 docs/           Plan, architecture, data sources, audio
 ```
 

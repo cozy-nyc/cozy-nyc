@@ -52,7 +52,7 @@ Goal: show it to 20 friends on a Friday night.
 
 ### Phase 3 — aesthetics
 - [x] Panel UI uses the old cozy palette and fonts from comfy/Figma.
-- [x] Flat "subway map" style (`packages/comfy/map/style.ts`): white boroughs on grey-blue water, faint streets, subway lines in MTA colors with stations, after the MTA/Vignelli diagram and Work&Co's redraw. Only the five boroughs are drawn; everything else is water. No buildings for now.
+- [x] Flat "subway map" style (`map/style.ts` in comfy): white boroughs on grey-blue water, faint streets, subway lines in MTA colors with stations, after the MTA/Vignelli diagram and Work&Co's redraw. Only the five boroughs are drawn; everything else is water. No buildings for now.
 - [ ] Bring back 2.5D blocks as an option, rounded and marshmallow-like (custom three.js layer; the earlier flat-extrusion version is in git history at the "Diorama map style" commit).
 - [ ] Night variant of the map style.
 - [ ] Schematic (non-geographic) subway geometry, like the real diagram, if the geographic lines feel too wiggly.
@@ -69,11 +69,7 @@ Goal: show it to 20 friends on a Friday night.
 **Branches:** `main` is the integration branch (nothing is live, so there's no reason to protect it yet). Work on feature branches off `main` and open PRs into `main`. Cut a release branch when the public beta is ready.
 
 
-Everything lives in this one monorepo for now, including the design system (`packages/comfy`, imported from the old `cozy-nyc/comfy` repo with its history).
-
-Why not keep comfy separate yet: cozy is its only user. With two repos, every design change would need a release in comfy and then a version bump in the app. That's slow, and drifting copies are the usual result. Here one PR can change a token and the screens that use it.
-
-When to split it out: when a second, separate project (another city, a native app, a marketing site in another repo) needs it. Then publish `@cozy/comfy` to npm (or GitHub Packages) from this repo, or split it with `git subtree split --prefix=packages/comfy`. The package already has its own `package.json` and exports, so that's a small job.
+The app, server and shared types live in this monorepo. The design system is its own open-source repo, [cozy-nyc/comfy](https://github.com/cozy-nyc/comfy), installed here from GitHub as `@cozy/comfy` (pinned to a commit in `pnpm-lock.yaml`; `pnpm --filter @cozy/web update @cozy/comfy` moves it). Change the design system in Figma first, then in comfy, then bump it here. Publishing comfy to npm is a later step once the name/scope is settled.
 
 ## Next session (map polish)
 
@@ -90,7 +86,7 @@ When to split it out: when a second, separate project (another city, a native ap
 
 ## Open questions
 
-1. ~~What does `comfy` become?~~ It's the design system, living in the monorepo at `packages/comfy` (see "Repo strategy" below).
+1. ~~What does `comfy` become?~~ The open-source design system, its own repo (see "Repo strategy").
 2. Comment moderation: who reviews reports at 2am?
 3. Is "tonight" always 5pm–6am, or should daytime events (gallery openings, markets) show up too?
 4. Brand: keep the name "cozy" on a nightlife product?

@@ -1,7 +1,7 @@
 name: Deploy dev (Cloudflare Pages)
 on:
   push:
-    branches: [rebirth]
+    branches: [main]
   workflow_dispatch:
 concurrency:
   group: deploy-dev
@@ -23,7 +23,7 @@ jobs:
         env:
           # Public URL of the dev API server (repo variable, not a secret).
           VITE_API_URL: ${{ vars.DEV_API_URL }}
-      - run: pnpm --filter @cozy/web exec wrangler pages deploy dist --project-name cozy-nyc-dev --branch rebirth
+      - run: pnpm --filter @cozy/web exec wrangler pages deploy dist --project-name cozy-nyc-dev --branch main
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

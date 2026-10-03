@@ -57,8 +57,8 @@ importers:
   apps/web:
     dependencies:
       '@cozy/comfy':
-        specifier: workspace:*
-        version: link:../../packages/comfy
+        specifier: github:cozy-nyc/comfy
+        version: https://codeload.github.com/cozy-nyc/comfy/tar.gz/0dc0b93b9a3ce42f4b04ee6f363ee6a4506bacd2
       '@cozy/shared':
         specifier: workspace:*
         version: link:../../packages/shared
@@ -90,15 +90,6 @@ importers:
       vite:
         specifier: ^6.0.0
         version: 6.4.3(@types/node@22.20.5)(tsx@4.23.15)
-
-  packages/comfy:
-    devDependencies:
-      '@types/geojson':
-        specifier: ^7946.0.16
-        version: 7946.0.16
-      typescript:
-        specifier: ^5.7.0
-        version: 5.9.3
 
   packages/shared:
     dependencies:
@@ -197,6 +188,10 @@ packages:
   '@babel/types@7.29.8':
     resolution: {integrity: sha512-Vj1jF3cPfxg7OAfoI7QnVKLoILlm2JF9pnVHrX8qx7AHMiYWT+NDAA7jChlNgRS4WTLc/fD1lXLmPixluj+3Gg==}
     engines: {node: '>=6.9.0'}
+
+  '@cozy/comfy@https://codeload.github.com/cozy-nyc/comfy/tar.gz/0dc0b93b9a3ce42f4b04ee6f363ee6a4506bacd2':
+    resolution: {tarball: https://codeload.github.com/cozy-nyc/comfy/tar.gz/0dc0b93b9a3ce42f4b04ee6f363ee6a4506bacd2}
+    version: 0.1.0
 
   '@electric-sql/pglite@0.2.17':
     resolution: {integrity: sha512-qEpKRT2oUaWDH6tjRxLHjdzMqRUGYDnGZlKrnL4dJ77JVMcP2Hpo3NYnOSPKdZdeec57B6QPprCUFg0picx5Pw==}
@@ -1572,6 +1567,8 @@ snapshots:
     dependencies:
       '@babel/helper-string-parser': 7.29.7
       '@babel/helper-validator-identifier': 7.29.7
+
+  '@cozy/comfy@https://codeload.github.com/cozy-nyc/comfy/tar.gz/0dc0b93b9a3ce42f4b04ee6f363ee6a4506bacd2': {}
 
   '@electric-sql/pglite@0.2.17': {}
 

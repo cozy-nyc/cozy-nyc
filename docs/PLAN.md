@@ -66,7 +66,7 @@ Goal: show it to 20 friends on a Friday night.
 
 ## Repo strategy
 
-**Branches:** `rebirth` is the integration branch for everything until the public beta; `main` stays as the old project until then. Work on feature branches off `rebirth` and open PRs into `rebirth`. When the beta is ready, `rebirth` merges to `main`.
+**Branches:** `main` is the integration branch (nothing is live, so there's no reason to protect it yet). Work on feature branches off `main` and open PRs into `main`. Cut a release branch when the public beta is ready.
 
 
 Everything lives in this one monorepo for now, including the design system (`packages/comfy`, imported from the old `cozy-nyc/comfy` repo with its history).

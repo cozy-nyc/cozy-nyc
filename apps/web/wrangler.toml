@@ -1,5 +1,0 @@
-# Cloudflare Pages config for the web app (dev build).
-# Deploy: pnpm --filter @cozy/web deploy:dev  (see docs/DEPLOY.md)
-name = "cozy-nyc-dev"
-pages_build_output_dir = "./dist"
-compatibility_date = "2025-01-01"

@@ -6,11 +6,15 @@
     "dev": "pnpm -r --parallel --filter './apps/*' dev",
     "build": "pnpm -r build",
     "typecheck": "pnpm -r typecheck",
-    "test": "pnpm -r test"
+    "test": "pnpm -r test",
+    "deploy:dev": "pnpm build && wrangler deploy"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
       "esbuild"
     ]
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
   }
 }

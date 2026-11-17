@@ -4,6 +4,7 @@ import { api } from "./api";
 import { AudioEngine } from "./audio/engine";
 import { loadIdentity, spawnPoint } from "./identity";
 import { logo } from "./logo";
+import { project } from "./map/projection";
 import { SvgMap, type MapLayers, type SvgMapHandle } from "./map/SvgMap";
 import { NEWS } from "./mock/news";
 import { loadPref, savePref } from "./prefs";
@@ -15,7 +16,8 @@ import { NewsPanel } from "./ui/NewsPanel";
 import { SocialPanel } from "./ui/SocialPanel";
 import { useRealtime } from "./useRealtime";
 
-const ENERGY_RADIUS_M = 400;
+/** How close (in diagram units) the middle of the map has to be to an event for the music to pick up. */
+const ENERGY_RADIUS = 90;
 const DESKTOP = "(min-width: 800px)";
 
 type SidePanel = "social" | "news" | null;
@@ -29,7 +31,7 @@ export function App() {
   const [liveComments, setLiveComments] = useState<EventComment[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [side, setSide] = useState<SidePanel>(null);
-  const [layers, setLayers] = useState<MapLayers>(() => loadPref("cozy.layers", { subway: true, stations: true }));
+  const [layers, setLayers] = useState<MapLayers>(() => loadPref("cozy.layers", { subway: true }));
   const audio = useRef<AudioEngine | null>(null);
   const starting = useRef(false);
   const [scene, setScene] = useState<string | null>(null);
@@ -113,15 +115,15 @@ export function App() {
   }, []);
 
   // Energy follows the hottest event near the middle of the map.
-  const eventsRef = useRef(events);
-  eventsRef.current = events;
-  const onViewChange = useCallback(({ lng, lat }: { lng: number; lat: number }) => {
+  const hotspots = useMemo(() => events.map((e) => ({ at: project(e.lng, e.lat), heat: e.heat })), [events]);
+  const hotspotsRef = useRef(hotspots);
+  hotspotsRef.current = hotspots;
+  const onViewChange = useCallback(({ x, y }: { x: number; y: number }) => {
     if (!audio.current) return;
-    const kx = 111_320 * Math.cos((lat * Math.PI) / 180);
     let energy = 0;
-    for (const e of eventsRef.current) {
-      const d = Math.hypot((e.lng - lng) * kx, (e.lat - lat) * 110_540);
-      energy = Math.max(energy, e.heat * Math.max(0, 1 - d / ENERGY_RADIUS_M));
+    for (const h of hotspotsRef.current) {
+      const d = Math.hypot(h.at[0] - x, h.at[1] - y);
+      energy = Math.max(energy, h.heat * Math.max(0, 1 - d / ENERGY_RADIUS));
     }
     audio.current.setEnergy(energy);
   }, []);

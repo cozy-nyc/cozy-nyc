@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { WORLD_H, WORLD_W, project, unproject } from "./projection";
+import { WORLD_H, WORLD_W, project } from "./projection";
 
 /** screen = world * k + (tx, ty) */
 export interface View {
@@ -14,7 +14,7 @@ export interface Insets {
   bottom: number;
 }
 
-export const MAX_K = 48; // about one metre per pixel
+export const MAX_K = 5; // station names are comfortably readable well before this
 const DRAG_SLOP = 4;
 
 const isTyping = () => ["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement?.tagName ?? "");
@@ -233,9 +233,10 @@ export function usePanZoom(ref: React.RefObject<SVGSVGElement | null>, opts: Opt
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  /** Middle of the screen, in diagram units. */
   const center = () => {
     const v = view.current;
-    return unproject((size.current.w / 2 - v.tx) / v.k, (size.current.h / 2 - v.ty) / v.k);
+    return { x: (size.current.w / 2 - v.tx) / v.k, y: (size.current.h / 2 - v.ty) / v.k };
   };
 
   return { view: snapshot, size, dragged, zoomBy, flyTo, center };

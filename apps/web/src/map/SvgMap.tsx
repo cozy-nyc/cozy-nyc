@@ -1,15 +1,13 @@
-import { forwardRef, memo, useEffect, useImperativeHandle, useMemo, useRef, type ReactNode } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, type ReactNode } from "react";
 import type { Avatar, CozyEvent } from "@cozy/shared";
-import { NYC_BOROUGHS, SUBWAY_LINES, SUBWAY_STATIONS } from "@cozy/shared/geo";
-import { palette, tokens } from "@cozy/comfy/tokens";
-import { MTA_COLORS } from "@cozy/comfy/map";
+import { palette } from "@cozy/comfy/tokens";
+import diagramUrl from "../assets/subway-diagram.svg";
 import type { Identity } from "../identity";
-import { multiLinePath, multiPolygonPath, pointsPath, project } from "./projection";
+import { WORLD_H, WORLD_W, project } from "./projection";
 import { usePanZoom, type Insets, type View } from "./usePanZoom";
 
 export interface MapLayers {
   subway: boolean;
-  stations: boolean;
 }
 
 export interface SvgMapHandle {
@@ -28,75 +26,19 @@ interface Props {
   layers: MapLayers;
   getInsets(): Insets;
   onSelect(id: string | null): void;
-  onViewChange?(center: { lng: number; lat: number }): void;
+  /** Middle of the screen, in diagram units. */
+  onViewChange?(center: { x: number; y: number }): void;
   /** Things pinned to a place on the map, like the location card. */
   overlay?(toScreen: (lng: number, lat: number) => { x: number; y: number }, size: { w: number; h: number }): ReactNode;
 }
 
-const mapColor = tokens.color.map;
-const SELECT_K = 9;
-const STATION_LABEL_K = 14;
-
-// ---- Static geometry, projected once ----
-
-const LAND = NYC_BOROUGHS.features.map((f) => multiPolygonPath(f.geometry.coordinates)).join("");
-
-const BOROUGH_LABELS = NYC_BOROUGHS.features.map((f) => {
-  // Label the middle of the borough's biggest piece.
-  let best: number[][] = [];
-  for (const poly of f.geometry.coordinates) if (poly[0]!.length > best.length) best = poly[0]!;
-  let w = Infinity, e = -Infinity, s = Infinity, n = -Infinity;
-  for (const [x, y] of best) {
-    w = Math.min(w, x!); e = Math.max(e, x!); s = Math.min(s, y!); n = Math.max(n, y!);
-  }
-  const [x, y] = project((w + e) / 2, (s + n) / 2);
-  return { name: f.properties.boroname, x, y };
-});
-
-// The MTA data mixes LineString and MultiLineString features, and some services come in more than one feature.
-const LINES = SUBWAY_LINES.features.map((f, i) => ({
-  key: `${f.properties.service}-${i}`,
-  color: MTA_COLORS[f.properties.service] ?? mapColor.label.$value,
-  d: multiLinePath(f.geometry.type === "LineString" ? [f.geometry.coordinates] : f.geometry.coordinates),
-}));
-const LINES_CASING = LINES.map((l) => l.d).join("");
-
-const STATION_DOTS = pointsPath(SUBWAY_STATIONS.features.map((f) => f.geometry.coordinates));
-const STATIONS = SUBWAY_STATIONS.features.map((f) => {
-  const [x, y] = project(f.geometry.coordinates[0]!, f.geometry.coordinates[1]!);
-  return { id: f.properties.gtfs_stop_id, name: f.properties.stop_name, x, y };
-});
+/** Zoom to at least this when an event is picked; less on phones, where the screen holds less of the diagram. */
+const selectK = () => (window.innerWidth < 800 ? 1 : 1.6);
+/** The diagram's own water colour, so the edges of the sheet blend into the page. */
+const WATER = "#E4EDF9";
+const HALO = "#FFFFFF";
 
 const pin = (x: number, y: number, scale = "var(--ik)") => ({ transform: `translate(${x}px, ${y}px) scale(${scale})` });
-
-const BaseLayers = memo(function BaseLayers({ layers }: { layers: MapLayers }) {
-  return (
-    <>
-      <path className="land" d={LAND} fillRule="evenodd" fill={mapColor.land.$value} />
-      <g className="borough-labels" aria-hidden="true">
-        {BOROUGH_LABELS.map((b) => (
-          <text key={b.name} style={pin(b.x, b.y)} textAnchor="middle" fill={mapColor.label.$value}>
-            {b.name}
-          </text>
-        ))}
-      </g>
-      {layers.subway && (
-        <g className="subway" aria-hidden="true">
-          <path className="casing" d={LINES_CASING} stroke={mapColor.land.$value} />
-          {LINES.map((l) => (
-            <path key={l.key} d={l.d} stroke={l.color} />
-          ))}
-        </g>
-      )}
-      {layers.stations && (
-        <g className="stations" aria-hidden="true">
-          <path className="ring" d={STATION_DOTS} stroke={palette.black} />
-          <path className="fill" d={STATION_DOTS} stroke={mapColor.station.$value} />
-        </g>
-      )}
-    </>
-  );
-});
 
 // ---- Heat colour: blue → pink → hot, same ramp the feed's heat bar uses ----
 
@@ -121,15 +63,14 @@ export const SvgMap = forwardRef<SvgMapHandle, Props>(function SvgMap(props, han
     const s = svg.current?.style;
     if (!s) return;
     s.setProperty("--ik", String(1 / v.k));
-    // Lines and markers grow a little as you zoom in, but far slower than the map does.
-    s.setProperty("--lw", `${Math.min(7, 1.3 + v.k * 0.3).toFixed(2)}px`);
-    s.setProperty("--ms", Math.min(1.25, 0.5 + v.k * 0.07).toFixed(3));
+    // Markers grow a little as you zoom in, but far slower than the map does.
+    s.setProperty("--ms", Math.min(1.25, 0.55 + v.k * 0.4).toFixed(3));
   };
 
   const pz = usePanZoom(svg, {
     apply,
     getInsets: () => propsRef.current.getInsets(),
-    initial: { ...props.position.current, k: 5 },
+    initial: { ...props.position.current, k: window.innerWidth < 800 ? 0.7 : 1.1 },
   });
   const { view } = pz;
 
@@ -142,7 +83,7 @@ export const SvgMap = forwardRef<SvgMapHandle, Props>(function SvgMap(props, han
   // Fly to the selected event.
   useEffect(() => {
     const e = props.events.find((x) => x.id === props.selectedId);
-    if (e) pz.flyTo(e.lng, e.lat, SELECT_K);
+    if (e) pz.flyTo(e.lng, e.lat, selectK());
     // Only when the selection changes, not on every events refresh.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.selectedId]);
@@ -152,22 +93,15 @@ export const SvgMap = forwardRef<SvgMapHandle, Props>(function SvgMap(props, han
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [view]);
 
-  const zoom = view.k < 2.5 ? "far" : view.k < 8 ? "mid" : "near";
+  const zoom = view.k < 0.6 ? "far" : view.k < 1.3 ? "mid" : "near";
   const { w, h } = pz.size.current;
-
-  const stationLabels = useMemo(() => {
-    if (!props.layers.stations || view.k < STATION_LABEL_K) return [];
-    const x0 = -view.tx / view.k, y0 = -view.ty / view.k;
-    const x1 = (w - view.tx) / view.k, y1 = (h - view.ty) / view.k;
-    return STATIONS.filter((s) => s.x > x0 && s.x < x1 && s.y > y0 && s.y < y1);
-  }, [props.layers.stations, view, w, h]);
 
   const markers = useMemo(
     () =>
       props.events
         .map((e) => {
           const [x, y] = project(e.lng, e.lat);
-          return { e, x, y, r: 5 + e.heat * 9, color: heatColor(e.heat) };
+          return { e, x, y, r: 7 + e.heat * 9, color: heatColor(e.heat) };
         })
         // Hotter on top, selected on top of everything.
         .sort((a, b) => Number(a.e.id === props.selectedId) - Number(b.e.id === props.selectedId) || a.e.heat - b.e.heat),
@@ -175,7 +109,7 @@ export const SvgMap = forwardRef<SvgMapHandle, Props>(function SvgMap(props, han
   );
 
   const others = props.avatars.filter((a) => a.id !== props.meId);
-  const me = project(props.position.current.lng, props.position.current.lat);
+  const me = useMemo(() => project(props.position.current.lng, props.position.current.lat), [props.position]);
 
   const select = (e: React.SyntheticEvent, id: string) => {
     e.stopPropagation();
@@ -193,7 +127,7 @@ export const SvgMap = forwardRef<SvgMapHandle, Props>(function SvgMap(props, han
         ref={svg}
         className="map-svg"
         data-zoom={zoom}
-        style={{ background: mapColor.water.$value }}
+        style={{ background: WATER }}
         role="group"
         aria-label="Map of New York City with tonight's events"
         onClick={() => {
@@ -201,14 +135,7 @@ export const SvgMap = forwardRef<SvgMapHandle, Props>(function SvgMap(props, han
         }}
       >
         <g ref={world}>
-          <BaseLayers layers={props.layers} />
-          <g className="station-labels" aria-hidden="true">
-            {stationLabels.map((s) => (
-              <text key={s.id} style={pin(s.x, s.y)} x={10} y={4} fill={palette.black} stroke={mapColor.land.$value}>
-                {s.name}
-              </text>
-            ))}
-          </g>
+          {props.layers.subway && <image className="diagram" href={diagramUrl} width={WORLD_W} height={WORLD_H} />}
           <g className="events">
             {markers.map(({ e, x, y, r, color }) => (
               <g
@@ -230,7 +157,7 @@ export const SvgMap = forwardRef<SvgMapHandle, Props>(function SvgMap(props, han
                 <circle className="glow" r={r * 2.2} fill={color} />
                 <circle className="hit" r={Math.max(r, 14)} fill="transparent" />
                 <circle className="dot" r={r} fill={color} stroke={palette.white} />
-                <text y={r + 15} textAnchor="middle" fill={palette.black} stroke={mapColor.land.$value}>
+                <text y={r + 15} textAnchor="middle" fill={palette.black} stroke={HALO}>
                   {e.venueName}
                 </text>
               </g>

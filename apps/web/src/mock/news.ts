@@ -15,10 +15,10 @@ export const NEWS: NewsPost[] = [
     id: "new-map",
     title: "The map is now a subway map",
     date: "2026-11-17",
-    excerpt: "Boroughs, lines and stations, drawn fresh. Everything else got out of the way.",
+    excerpt: "The whole city on one screen, the way you already know it from the train.",
     body: [
-      "The city on cozy is now drawn as a subway map: white boroughs on grey-blue water, with every line in its MTA colour and a dot for every station.",
-      "Zoom with the buttons in the corner, a scroll wheel or a pinch. Turn the lines or the stations off under the layers button if you want a quieter map.",
+      "The city on cozy is now drawn as the subway diagram: every line in its MTA colour, every station named, and the boroughs stretched so the busy parts get the room they need.",
+      "Zoom with the buttons in the corner, a scroll wheel or a pinch. Events sit where they would be on the diagram, so the nearest station is right there next to the dot.",
     ],
   },
   {

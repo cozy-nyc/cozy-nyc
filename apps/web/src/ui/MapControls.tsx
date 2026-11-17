@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { MapLayers } from "../map/SvgMap";
 import { Icon } from "./icons";
 
-const LAYER_LABELS: Record<keyof MapLayers, string> = { subway: "Subway lines", stations: "Stations" };
+const LAYER_LABELS: Record<keyof MapLayers, string> = { subway: "Subway map" };
 
 interface Props {
   layers: MapLayers;

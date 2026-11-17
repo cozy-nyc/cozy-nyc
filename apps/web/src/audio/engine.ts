@@ -77,12 +77,16 @@ export function sceneForHour(m: Pick<Manifest, "scenes">, hour: number): string 
   return m.scenes[0]!.id;
 }
 
+const MASTER_GAIN = 0.8;
+
 export class AudioEngine {
   private ctx: AudioContext | null = null;
   private manifest!: Manifest;
   private stems: { def: StemDef; gain: GainNode }[] = [];
   private t0 = 0;
   private energy = 0.3;
+  private master: GainNode | null = null;
+  private isMuted = false;
   scene: string | null = null;
 
   /** Must be called from a user gesture (browser autoplay rules). */
@@ -92,8 +96,9 @@ export class AudioEngine {
     const ctx = new AudioContext();
     this.ctx = ctx;
     const master = ctx.createGain();
-    master.gain.value = 0.8;
+    master.gain.value = this.isMuted ? 0 : MASTER_GAIN;
     master.connect(ctx.destination);
+    this.master = master;
     const loopSeconds = (m.loopBars * m.beatsPerBar * 60) / m.bpm;
 
     const buffers = await Promise.all(
@@ -161,9 +166,25 @@ export class AudioEngine {
     this.setScene(sceneForHour(this.manifest, hourOverride ?? nycHour()));
   }
 
+  get muted() {
+    return this.isMuted;
+  }
+
+  /** Silence the output without stopping the loops, so unmuting drops you back in on the beat. */
+  setMuted(muted: boolean) {
+    this.isMuted = muted;
+    if (!this.ctx || !this.master) return;
+    const g = this.master.gain;
+    const now = this.ctx.currentTime;
+    g.cancelScheduledValues(now);
+    g.setValueAtTime(g.value, now);
+    g.linearRampToValueAtTime(muted ? 0 : MASTER_GAIN, now + 0.25);
+  }
+
   async stop() {
     await this.ctx?.close();
     this.ctx = null;
+    this.master = null;
     this.scene = null;
     this.stems = [];
   }

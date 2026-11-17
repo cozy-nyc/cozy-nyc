@@ -4,7 +4,7 @@
 
 The soundtrack plays continuously and changes with the night. Instead of switching between finished tracks, it's built from **stems**: loops that can be layered. Each time of day (a **scene**) turns on a set of stems. When the scene changes, stems shared by the old and new scene keep playing, and the rest fade in or out over a few bars. That's how a bassline from the 9pm track can carry into the 1am track.
 
-Separately, **energy** stems (drums, hats) get louder as you walk toward hot events and quieter in empty parts of the city.
+Separately, **energy** stems (drums, hats) get louder as you move the map toward hot events and quieter in empty parts of the city.
 
 ## Current scenes (New York time)
 

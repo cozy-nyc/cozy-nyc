@@ -29,7 +29,7 @@ docker compose up -d db
 # set DATABASE_URL=postgres://cozy:comfy123@localhost:5432/cozy in .env
 ```
 
-Controls: WASD / arrows to walk, shift to run, click the map to walk somewhere, F to recenter on yourself, click a dot for details and comments. Use `?hour=2` to hear the 2am music scene at any time.
+Controls: drag to pan, scroll or pinch to zoom (or `+` / `-` and the arrow keys), click a dot or a feed row for the venue's address and links. The tiles under the feed open the social feed (what visitors are posting) and the news panel. Sound starts on your first click; the mute button is bottom right. Walking is switched off for now, so avatars stay where they spawn. Use `?hour=2` to hear the 2am music scene at any time.
 
 ## Layout
 

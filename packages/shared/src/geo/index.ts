@@ -10,7 +10,7 @@ import subwayStations from "./subway-stations.json";
 export const NYC_BOROUGHS = boroughs as unknown as GeoJSON.FeatureCollection<GeoJSON.MultiPolygon, { boroname: string; borocode: string }>;
 
 /** MTA "Subway Service Lines" (data.ny.gov s692-irgq), simplified. Property `service` is the line letter/number. */
-export const SUBWAY_LINES = subwayLines as unknown as GeoJSON.FeatureCollection<GeoJSON.MultiLineString, { service: string }>;
+export const SUBWAY_LINES = subwayLines as unknown as GeoJSON.FeatureCollection<GeoJSON.LineString | GeoJSON.MultiLineString, { service: string }>;
 
 /** MTA "Subway Stations" (data.ny.gov 39hk-dx4f). */
 export const SUBWAY_STATIONS = subwayStations as unknown as GeoJSON.FeatureCollection<GeoJSON.Point, { stop_name: string; daytime_routes: string; gtfs_stop_id: string }>;

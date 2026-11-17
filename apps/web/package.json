@@ -13,7 +13,6 @@
   "dependencies": {
     "@cozy/comfy": "github:cozy-nyc/comfy",
     "@cozy/shared": "workspace:*",
-    "maplibre-gl": "^5.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },

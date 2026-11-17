@@ -27,5 +27,4 @@ VITE_API_URL=https://cozy-api-dev.example.com pnpm deploy:dev
 
 - `VITE_API_URL` is baked in at build time. The WebSocket URL is derived from it (`https` becomes `wss`).
 - `apps/web/public/_headers` caches hashed assets and sets `noindex` for the dev site.
-- The JS bundle is about 2 MB (540 KB gzipped), mostly MapLibre. Fine for dev; code-splitting is a later optimisation.
 - Unknown paths fall back to `index.html` (`single-page-application`).

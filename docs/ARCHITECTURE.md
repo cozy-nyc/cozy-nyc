@@ -30,10 +30,11 @@ Full snapshots to everyone work for a few hundred concurrent users. Next steps, 
 
 ## Web (`apps/web`)
 
-- `map/CityMap.tsx`: flat MapLibre map rotated to the Manhattan grid, using the comfy "subway map" style. `@cozy/shared/geo` provides the five-borough mask (hides everything outside NYC), the MTA subway lines and stations, and `isInNyc()`, which keeps avatars on land. GeoJSON sources hold events, other avatars, and you. A `requestAnimationFrame` loop handles walking: WASD moves relative to the camera, click-to-walk moves toward a target. Positions are sent at 10 Hz.
+- `map/SvgMap.tsx`: the city as one SVG, north-up, drawn from `@cozy/shared/geo` (borough outlines, MTA subway lines and stations) in comfy's subway-map colors. No tiles and no map library. `map/projection.ts` turns lng/lat into flat map units; `map/usePanZoom.ts` handles drag, wheel, pinch, keys and the fly-to animation by writing one transform to the DOM. Events are dots sized and colored by heat; avatars are drawn at their spawn points (walking is off for now, though the server and protocol still support `move`).
 - `useRealtime.ts`: WebSocket with automatic reconnect.
-- `audio/engine.ts`: layered loop engine (see AUDIO.md). Energy follows the hottest event within 400 m of you.
-- `ui/EventPanel.tsx`: event list sorted by heat, plus a detail view with live comments.
+- `audio/engine.ts`: layered loop engine (see AUDIO.md). `setMuted()` silences the output without stopping the loops. Energy follows the hottest event within 400 m of the middle of the map.
+- `ui/`: `EventFeed` (events sorted by heat), `LocationCard` (address, Google Maps link and venue links, pinned to the selected marker; a bottom sheet on phones), `SocialPanel` (every event's comments in one stream, plus posting), `NewsPanel`, `MapControls` (zoom, layers, mute).
+- `mock/`: placeholder venue addresses/links and news posts, until the server has a venue table and a posts API.
 
 ## Shared (`packages/shared`)
 

@@ -189,8 +189,7 @@ export function App() {
       </div>
 
       <aside className="left" ref={feedRef}>
-        <section className="panel feed" aria-label="Today's events">
-          <h2>Today</h2>
+        <section className="panel feed" aria-label="Events">
           {loadError && <p className="error">couldn't load events: {loadError}</p>}
           <EventFeed events={events} selectedId={selectedId} onSelect={setSelectedId} />
         </section>

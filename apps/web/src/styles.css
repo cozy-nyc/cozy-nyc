@@ -3,6 +3,7 @@
   --panel-shadow: 4px 5px 6.15px rgb(0 0 0 / 0.15);
   --pink-shadow: 2px 2px 1px rgb(217 45 107 / 0.5); /* figma: cozy pink shadow */
   --smoke-shadow: 2px 2px 1px rgb(105 109 115 / 0.5); /* figma: cozy smoke shadow */
+  --map-water: #dad2d5; /* figma: page fill behind the map */
   --hover: color-mix(in srgb, var(--text-primary) 7%, transparent);
   --edge: 41px;
   --left-w: 458px;
@@ -21,14 +22,14 @@
   --background-layer3: var(--color-neutral-80);
 }
 * { box-sizing: border-box; }
-html, body, #root { margin: 0; height: 100%; background: var(--background-base); overflow: hidden; }
+html, body, #root { margin: 0; height: 100%; background: var(--map-water); overflow: hidden; }
 button { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--border-focus); outline-offset: 2px; }
 .app { position: relative; height: 100%; }
 
 /* ---- Map ---- */
 .map { position: absolute; inset: 0; overflow: hidden; }
-.map-svg { display: block; width: 100%; height: 100%; background: var(--background-base); touch-action: none; cursor: grab; user-select: none; -webkit-user-select: none; }
+.map-svg { display: block; width: 100%; height: 100%; background: var(--map-water); touch-action: none; cursor: grab; user-select: none; -webkit-user-select: none; }
 .map-svg.dragging { cursor: grabbing; }
 .map-svg text { font: 700 12px var(--font-body); paint-order: stroke; stroke-width: 4px; stroke-linejoin: round; pointer-events: none; }
 .diagram { pointer-events: none; }
@@ -175,7 +176,8 @@ button { font: inherit; color: inherit; }
   border-radius: var(--radius-base); background: var(--interactive-primary-active); color: var(--interactive-primary-text); box-shadow: var(--pink-shadow);
 }
 .ctl:hover { background: var(--interactive-primary-hover); }
-.ctl.off { background: var(--background-layer3); color: var(--text-primary); box-shadow: var(--smoke-shadow); }
+.ctl.pale { flex: none; background: var(--interactive-primary-inactive); color: var(--interactive-primary-active); }
+.ctl.pale:hover { background: var(--color-hot-90); }
 .zoom { display: flex; flex-direction: column; gap: 2px; border-radius: var(--radius-base); background: var(--interactive-primary-active); box-shadow: var(--pink-shadow); }
 .zoom .ctl { box-shadow: none; background: transparent; }
 .zoom .ctl:hover { background: var(--interactive-primary-hover); }
@@ -188,6 +190,18 @@ button { font: inherit; color: inherit; }
 .popover legend { float: left; width: 100%; padding: 0; margin-bottom: 2px; font: 800 0.75rem var(--font-heading); }
 .popover label { display: flex; align-items: center; gap: var(--space-1); font-size: 0.875rem; cursor: pointer; }
 .popover input { width: 18px; height: 18px; margin: 0; accent-color: var(--interactive-primary-active); }
+
+/* ---- Player card, bottom right ---- */
+.player {
+  position: absolute; right: 40px; bottom: 39px; width: 263px; max-width: calc(100% - 80px); display: flex; align-items: center; gap: 13px; padding: var(--space-1);
+  background: var(--interactive-primary-active); color: var(--interactive-primary-text); border-radius: var(--radius-base); overflow: hidden;
+}
+.player-text { display: flex; flex-direction: column; flex: 1; min-width: 0; padding: var(--space-1); font: 800 0.75rem/1.25 var(--font-heading); }
+.player-text > span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.player-label { display: flex; align-items: center; gap: 5px; margin-bottom: var(--space-1); font-size: 0.625rem; overflow: visible !important; }
+.player-title { text-transform: capitalize; }
+.live { width: 8px; height: 8px; flex: none; border-radius: 4px; background: var(--interactive-primary-text); opacity: 0.5; }
+.live.on { opacity: 1; box-shadow: 0 0 8px rgb(88 182 177 / 0.9); }
 
 /* Narrower desktops: slimmer column, and the side panel covers the events feed instead of sitting next to it. */
 @media (min-width: 800px) and (max-width: 1199px) {
@@ -213,6 +227,9 @@ button { font: inherit; color: inherit; }
   .side-slot { left: var(--space-1); right: var(--space-1); bottom: var(--space-1); top: 72px; width: auto; height: auto; z-index: 3; }
   .side { min-height: calc(var(--sheet-h) - var(--space-1)); }
   .controls { top: auto; transform: none; right: 12px; bottom: calc(var(--sheet-h) + var(--space-1)); gap: var(--space-1); }
+  .player { right: auto; left: 12px; bottom: calc(var(--sheet-h) + var(--space-1)); width: auto; max-width: calc(100% - 76px); gap: 4px; padding: 4px; }
+  .player-text { padding: 4px 8px; }
+  .player-label { margin-bottom: 2px; }
   /* The location card is a sheet over the feed instead of a bubble on the map. */
   .card {
     position: fixed; z-index: 2; left: var(--space-1) !important; right: var(--space-1); bottom: var(--space-1); top: auto !important; width: auto !important;

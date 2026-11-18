@@ -15,7 +15,7 @@ interface Props {
   onToggleMute(): void;
 }
 
-/** Right-edge stack: zoom, map layers, and mute. */
+/** Right-edge stack (zoom, map layers) and the player card, bottom right, with mute. */
 export function MapControls(props: Props) {
   const [open, setOpen] = useState(false);
   const layersRef = useRef<HTMLDivElement>(null);
@@ -36,9 +36,10 @@ export function MapControls(props: Props) {
     };
   }, [open]);
 
-  const status = props.muted ? "muted" : (props.scene ?? "tap for sound");
+  const playing = !props.muted && props.scene !== null;
 
   return (
+    <>
     <div className="controls">
       <div className="zoom" role="group" aria-label="Zoom">
         <button className="ctl" onClick={props.onZoomIn} aria-label="Zoom in">
@@ -64,15 +65,22 @@ export function MapControls(props: Props) {
           <Icon name="layers" size={24} />
         </button>
       </div>
-      <button
-        className={props.muted || !props.scene ? "ctl off" : "ctl"}
-        onClick={props.onToggleMute}
-        aria-label={props.muted ? "Unmute" : "Mute"}
-        aria-pressed={props.muted}
-        title={status}
-      >
-        <Icon name={props.muted ? "muted" : "sound"} size={24} />
+    </div>
+    <div className="player">
+      <div className="player-text">
+        <span className="player-label">
+          <span className={playing ? "live on" : "live"} aria-hidden="true" />
+          {playing ? "Now Playing" : props.muted ? "Muted" : "Sound Off"}
+        </span>
+        <span className="player-title" aria-live="polite">
+          {props.scene ?? "Tap anywhere for sound"}
+        </span>
+        <span className="player-by">@cozy soundtrack</span>
+      </div>
+      <button className="ctl pale" onClick={props.onToggleMute} aria-label={props.muted ? "Unmute" : "Mute"} aria-pressed={props.muted}>
+        <Icon name={playing ? "sound" : "muted"} size={24} />
       </button>
     </div>
+    </>
   );
 }

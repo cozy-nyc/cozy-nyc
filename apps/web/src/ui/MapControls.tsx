@@ -9,8 +9,8 @@ interface Props {
   onLayers(next: MapLayers): void;
   onZoomIn(): void;
   onZoomOut(): void;
-  /** null until the first tap starts the audio. */
-  scene: string | null;
+  /** What is playing, as one line of text (it can name a place, e.g. "DJ Luvhandles @ LotRadio"). null until the first tap starts the audio. */
+  title: string | null;
   muted: boolean;
   onToggleMute(): void;
 }
@@ -36,7 +36,7 @@ export function MapControls(props: Props) {
     };
   }, [open]);
 
-  const playing = !props.muted && props.scene !== null;
+  const playing = !props.muted && props.title !== null;
 
   return (
     <>
@@ -73,9 +73,8 @@ export function MapControls(props: Props) {
           {playing ? "Now Playing" : props.muted ? "Muted" : "Sound Off"}
         </span>
         <span className="player-title" aria-live="polite">
-          {props.scene ?? "Tap anywhere for sound"}
+          {props.title ?? "Tap anywhere for sound"}
         </span>
-        <span className="player-by">@cozy soundtrack</span>
       </div>
       <button className="ctl pale" onClick={props.onToggleMute} aria-label={props.muted ? "Unmute" : "Mute"} aria-pressed={props.muted}>
         <Icon name={playing ? "sound" : "muted"} size={24} />

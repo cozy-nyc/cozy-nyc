@@ -231,7 +231,7 @@ export function App() {
         onLayers={setLayersPref}
         onZoomIn={() => map.current?.zoomIn()}
         onZoomOut={() => map.current?.zoomOut()}
-        scene={scene}
+        title={scene && scene[0]!.toUpperCase() + scene.slice(1)}
         muted={muted}
         onToggleMute={toggleMute}
       />

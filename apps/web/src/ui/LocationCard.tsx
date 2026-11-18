@@ -1,6 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { CozyEvent } from "@cozy/shared";
-import { logo } from "../logo";
 import { googleMapsUrl, venueFor } from "../mock/venues";
 import { time } from "./format";
 import { Icon } from "./icons";
@@ -53,7 +52,7 @@ export function LocationCard({ event, anchor, bounds, onClose, onOpenPosts }: Pr
       </button>
       <h2>{event.title}</h2>
       <div className="card-body">
-        <img className={event.imageUrl ? "thumb" : "thumb blank"} src={event.imageUrl ?? logo} alt="" />
+        {event.imageUrl ? <img className="poster" src={event.imageUrl} alt="" /> : <span className="poster" />}
         <div>
           <strong>{event.venueName}</strong>
           <p>{venue?.address ?? "Address not listed yet"}</p>

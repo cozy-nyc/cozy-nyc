@@ -3,7 +3,7 @@ import type { CozyEvent, EventComment } from "@cozy/shared";
 import { api } from "./api";
 import { AudioEngine } from "./audio/engine";
 import { loadIdentity, spawnPoint } from "./identity";
-import { logo } from "./logo";
+import wordmark from "./assets/logo-wordmark.svg";
 import { project } from "./map/projection";
 import { SvgMap, type MapLayers, type SvgMapHandle } from "./map/SvgMap";
 import { NEWS } from "./mock/news";
@@ -31,7 +31,7 @@ export function App() {
   const [liveComments, setLiveComments] = useState<EventComment[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [side, setSide] = useState<SidePanel>(null);
-  const [layers, setLayers] = useState<MapLayers>(() => loadPref("cozy.layers", { subway: true }));
+  const [layers, setLayers] = useState<MapLayers>(() => loadPref("cozy.layers", { subway: false }));
   const audio = useRef<AudioEngine | null>(null);
   const starting = useRef(false);
   const [scene, setScene] = useState<string | null>(null);
@@ -177,34 +177,37 @@ export function App() {
         }
       />
 
-      <header className="brand">
-        <img src={logo} alt="" width={32} height={32} />
-        <h1>cozy</h1>
-        <span className={rt.connected ? "dot on" : "dot"} role="img" aria-label={rt.connected ? "live" : "offline"} />
-        <span className="who">
-          {rt.avatars.length} here · you are <b style={{ color: identity.color }}>{identity.handle}</b>
+      <h1 className="brand">
+        <img src={wordmark} alt="cozy" width={177} height={80} />
+      </h1>
+
+      <div className="user" title={`${rt.avatars.length} here${rt.connected ? "" : " · offline"}`}>
+        <span className="user-pic" style={{ background: identity.color }}>
+          <span className={rt.connected ? "dot on" : "dot"} role="img" aria-label={rt.connected ? "live" : "offline"} />
         </span>
-      </header>
+        <span className="user-handle">@{identity.handle}</span>
+      </div>
 
       <aside className="left" ref={feedRef}>
-        <section className="panel feed" aria-label="Tonight's events">
-        <header className="panel-head">
-          <h2>tonight</h2>
-          <span className="count">{events.length} events</span>
-        </header>
-        {loadError && <p className="error">couldn't load events: {loadError}</p>}
-        <EventFeed events={events} selectedId={selectedId} onSelect={setSelectedId} />
+        <section className="panel feed" aria-label="Today's events">
+          <h2>Today</h2>
+          {loadError && <p className="error">couldn't load events: {loadError}</p>}
+          <EventFeed events={events} selectedId={selectedId} onSelect={setSelectedId} />
         </section>
         <nav className="tiles" aria-label="Feeds">
           <button className={side === "social" ? "tile on" : "tile"} aria-expanded={side === "social"} onClick={() => setSide(side === "social" ? null : "social")}>
-            <Icon name="open" size={18} />
-            <strong>social</strong>
-            <small>{postCount ? `${postCount} ${postCount === 1 ? "post" : "posts"} tonight` : "say something"}</small>
+            <Icon name="open" size={24} />
+            <span>
+              <strong>Social Room</strong>
+              <small>{postCount ? `${postCount} ${postCount === 1 ? "post" : "posts"} today` : "Say something"}</small>
+            </span>
           </button>
           <button className={side === "news" ? "tile on" : "tile"} aria-expanded={side === "news"} onClick={() => setSide(side === "news" ? null : "news")}>
-            <Icon name="open" size={18} />
-            <strong>news</strong>
-            <small>{NEWS[0]?.title}</small>
+            <Icon name="open" size={24} />
+            <span>
+              <strong>News Stand</strong>
+              <small>{NEWS[0]?.title}</small>
+            </span>
           </button>
         </nav>
       </aside>

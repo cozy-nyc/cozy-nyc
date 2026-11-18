@@ -15,7 +15,7 @@ interface Props {
   onToggleMute(): void;
 }
 
-/** Bottom-right stack: zoom, map layers, and the now-playing pill with mute. */
+/** Right-edge stack: zoom, map layers, and mute. */
 export function MapControls(props: Props) {
   const [open, setOpen] = useState(false);
   const layersRef = useRef<HTMLDivElement>(null);
@@ -41,11 +41,11 @@ export function MapControls(props: Props) {
   return (
     <div className="controls">
       <div className="zoom" role="group" aria-label="Zoom">
-        <button className="icon-btn" onClick={props.onZoomIn} aria-label="Zoom in">
-          <Icon name="plus" />
+        <button className="ctl" onClick={props.onZoomIn} aria-label="Zoom in">
+          <Icon name="plus" size={24} />
         </button>
-        <button className="icon-btn" onClick={props.onZoomOut} aria-label="Zoom out">
-          <Icon name="minus" />
+        <button className="ctl" onClick={props.onZoomOut} aria-label="Zoom out">
+          <Icon name="minus" size={24} />
         </button>
       </div>
       <div className="layers" ref={layersRef}>
@@ -60,23 +60,19 @@ export function MapControls(props: Props) {
             ))}
           </fieldset>
         )}
-        <button className="icon-btn" onClick={() => setOpen((o) => !o)} aria-label="Map layers" aria-expanded={open}>
-          <Icon name="layers" />
+        <button className="ctl" onClick={() => setOpen((o) => !o)} aria-label="Map layers" aria-expanded={open}>
+          <Icon name="layers" size={24} />
         </button>
       </div>
-      <div className={props.muted || !props.scene ? "now-playing off" : "now-playing"}>
-        <span className="bars" aria-hidden="true">
-          <i />
-          <i />
-          <i />
-        </span>
-        <span className="scene" aria-live="polite">
-          {status}
-        </span>
-        <button className="icon-btn" onClick={props.onToggleMute} aria-label={props.muted ? "Unmute" : "Mute"} aria-pressed={props.muted}>
-          <Icon name={props.muted ? "muted" : "sound"} />
-        </button>
-      </div>
+      <button
+        className={props.muted || !props.scene ? "ctl off" : "ctl"}
+        onClick={props.onToggleMute}
+        aria-label={props.muted ? "Unmute" : "Mute"}
+        aria-pressed={props.muted}
+        title={status}
+      >
+        <Icon name={props.muted ? "muted" : "sound"} size={24} />
+      </button>
     </div>
   );
 }

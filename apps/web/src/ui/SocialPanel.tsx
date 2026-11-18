@@ -80,7 +80,7 @@ export function SocialPanel({ events, selected, author, liveComments, onSelect, 
   return (
     <section className="panel side" aria-label="Social feed">
       <header className="panel-head">
-        <h2>social</h2>
+        <h2>Social Room</h2>
         <button className="icon-btn ghost" onClick={onClose} aria-label="Close social feed">
           <Icon name="close" size={18} />
         </button>

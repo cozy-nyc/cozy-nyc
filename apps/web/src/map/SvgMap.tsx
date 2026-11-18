@@ -1,7 +1,8 @@
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, type ReactNode } from "react";
 import type { Avatar, CozyEvent } from "@cozy/shared";
 import { palette } from "@cozy/comfy/tokens";
-import diagramUrl from "../assets/subway-diagram.svg";
+import baseUrl from "../assets/map-base.svg";
+import subwayUrl from "../assets/map-subway.svg";
 import type { Identity } from "../identity";
 import { WORLD_H, WORLD_W, project } from "./projection";
 import { usePanZoom, type Insets, type View } from "./usePanZoom";
@@ -34,8 +35,12 @@ interface Props {
 
 /** Zoom to at least this when an event is picked; less on phones, where the screen holds less of the diagram. */
 const selectK = () => (window.innerWidth < 800 ? 1 : 1.6);
-/** The diagram's own water colour, so the edges of the sheet blend into the page. */
-const WATER = "#E4EDF9";
+/**
+ * Opening view, taken from the design: the whole city at 1638px wide on a 1440px screen,
+ * scaled with the window. Phones open closer in, on lower Manhattan and north Brooklyn.
+ */
+const initialView = () =>
+  window.innerWidth < 800 ? { x: 760, y: 1480, k: 0.5 } : { x: 994, y: 1169, k: Math.max(0.45, (0.655 * window.innerWidth) / 1440) };
 const HALO = "#FFFFFF";
 
 const pin = (x: number, y: number, scale = "var(--ik)") => ({ transform: `translate(${x}px, ${y}px) scale(${scale})` });
@@ -70,7 +75,7 @@ export const SvgMap = forwardRef<SvgMapHandle, Props>(function SvgMap(props, han
   const pz = usePanZoom(svg, {
     apply,
     getInsets: () => propsRef.current.getInsets(),
-    initial: { ...props.position.current, k: window.innerWidth < 800 ? 0.7 : 1.1 },
+    initial: initialView(),
   });
   const { view } = pz;
 
@@ -127,7 +132,7 @@ export const SvgMap = forwardRef<SvgMapHandle, Props>(function SvgMap(props, han
         ref={svg}
         className="map-svg"
         data-zoom={zoom}
-        style={{ background: WATER }}
+        
         role="group"
         aria-label="Map of New York City with tonight's events"
         onClick={() => {
@@ -135,7 +140,8 @@ export const SvgMap = forwardRef<SvgMapHandle, Props>(function SvgMap(props, han
         }}
       >
         <g ref={world}>
-          {props.layers.subway && <image className="diagram" href={diagramUrl} width={WORLD_W} height={WORLD_H} />}
+          <image className="diagram" href={baseUrl} width={WORLD_W} height={WORLD_H} />
+          {props.layers.subway && <image className="diagram subway" href={subwayUrl} width={WORLD_W} height={WORLD_H} />}
           <g className="events">
             {markers.map(({ e, x, y, r, color }) => (
               <g

@@ -15,7 +15,7 @@ export function NewsPanel({ onClose }: { onClose(): void }) {
             <Icon name="back" size={18} />
           </button>
         )}
-        <h2>news</h2>
+        <h2>News Stand</h2>
         <button className="icon-btn ghost" onClick={onClose} aria-label="Close news">
           <Icon name="close" size={18} />
         </button>

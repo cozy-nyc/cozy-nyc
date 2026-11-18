@@ -24,7 +24,8 @@ interface Options {
   /** Called on every view change, before React hears about it. Write transforms to the DOM here. */
   apply(view: View): void;
   getInsets(): Insets;
-  initial: { lng: number; lat: number; k: number };
+  /** Where to start: a point on the diagram (in diagram units) in the middle of the screen, at scale k. */
+  initial: { x: number; y: number; k: number };
 }
 
 export function usePanZoom(ref: React.RefObject<SVGSVGElement | null>, opts: Options) {
@@ -128,10 +129,8 @@ export function usePanZoom(ref: React.RefObject<SVGSVGElement | null>, opts: Opt
       size.current = { w: r.width, h: r.height };
     };
     measure();
-    const { lng, lat, k } = optsRef.current.initial;
-    const [x, y] = project(lng, lat);
-    const f = focusPoint();
-    commit({ k, tx: f.x - x * k, ty: f.y - y * k });
+    const { x, y, k } = optsRef.current.initial;
+    commit({ k, tx: size.current.w / 2 - x * k, ty: size.current.h / 2 - y * k });
 
     const ro = new ResizeObserver(() => {
       const before = size.current;
